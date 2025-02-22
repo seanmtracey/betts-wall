@@ -96,7 +96,7 @@
 
     setInterval(function(){
         multipleSplats(1);
-    }, Math.random() * 3000);
+    }, Math.random() * 1000);
 
     console.log("Simulating Touch Events");
 }());
@@ -112,6 +112,16 @@
         const ctx = canvas.getContext('2d');
         let points = [];
         let shapes = [];
+
+        let mousePos = { x: 0, y: 0 };
+
+        canvas.addEventListener('mousemove', (event) => {
+            const rect = canvas.getBoundingClientRect();
+            mousePos.x = event.clientX - rect.left;
+            mousePos.y = event.clientY - rect.top;
+
+            redraw(); // Redraw the canvas to update the cursor circle
+        });
 
         function setAlpha(canvas) {
             const ctx = canvas.getContext('2d');
@@ -169,13 +179,10 @@
                     ctx.closePath();
                     ctx.fillStyle = 'black';
                     ctx.fill();
-                    ctx.strokeStyle = 'black';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
                 }
             });
 
-            // Draw current lines
+            // Draw current lines in white
             if (points.length > 0) {
                 ctx.beginPath();
                 ctx.moveTo(points[0].x, points[0].y);
@@ -184,10 +191,16 @@
                     ctx.lineTo(points[i].x, points[i].y);
                 }
 
-                ctx.strokeStyle = 'black';
-                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 10;
                 ctx.stroke();
             }
+
+            // Draw the mouse-following circle
+            ctx.beginPath();
+            ctx.arc(mousePos.x, mousePos.y, 20, 0, Math.PI * 2);
+            ctx.fillStyle = 'red';
+            ctx.fill();
         }
 
         canvas.addEventListener('click', (event) => {
