@@ -1,13 +1,104 @@
-<h1>BETTS WALL</h1>
+<canvas></canvas>
+
+<script src="/javascripts/dat.min.js"></script>
+<script src="/javascripts/fluid.js"></script>
 
 <script>
+(function(){
+    'use strict';
 
-    (function(){
-        
-        'use strict';
+    const canvas = document.querySelector("canvas");
 
-        console.log("Ready.");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    }());
+    // Number of simulated fingers
+    const NUM_TOUCHES = 2;
+
+    // Movement speed
+    const MOVE_DISTANCE = 50;
+
+    // Store positions for each touch
+    let touches = [];
+
+    // Initialize touch positions
+    for (let i = 0; i < NUM_TOUCHES; i++) {
+        touches.push({
+            id: i,
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height
+        });
+    }
+
+    // Function to create a Touch object
+    function createTouch(id, x, y) {
+        return new Touch({
+            identifier: id,
+            target: canvas,
+            clientX: x,
+            clientY: y,
+            pageX: x,
+            pageY: y,
+            screenX: x,
+            screenY: y
+        });
+    }
+
+    // Function to dispatch touch events
+    function dispatchTouchEvent(type, touchList) {
+        const event = new TouchEvent(type, {
+            touches: Array.from(touchList),
+            targetTouches: Array.from(touchList),
+            changedTouches: Array.from(touchList),
+            bubbles: true,
+            cancelable: true
+        });
+        canvas.dispatchEvent(event);
+    }
+
+    // Simulate touch events
+    function simulateTouches() {
+        let touchList = [];
+
+        touches.forEach((touch, index) => {
+            // Randomly move the touch point
+            touch.x += (Math.random() - 0.5) * MOVE_DISTANCE;
+            touch.y += (Math.random() - 0.5) * MOVE_DISTANCE;
+
+            // Keep within canvas bounds
+            touch.x = Math.max(0, Math.min(canvas.width, touch.x));
+            touch.y = Math.max(0, Math.min(canvas.height, touch.y));
+
+            // Create a new Touch object
+            touchList.push(createTouch(touch.id, touch.x, touch.y));
+        });
+
+        console.log(touchList);
+
+        const payload = {
+            targetTouches : touchList
+        };
+
+        // Dispatch the events
+        dispatchTouchEvent('touchstart', touchList);
+        dispatchTouchEvent('touchmove', touchList);
+        dispatchTouchEvent('touchend', touchList);
+
+        {{!-- requestAnimationFrame(simulateTouches); --}}
+
+        {{!-- setTimeout(simulateTouches, 100); --}}
+    }
+
+    // Start the simulation
+    simulateTouches();
+
+    setInterval(function(){
+        multipleSplats(1);
+    }, Math.random() * 3000);
+
+    console.log("Simulating Touch Events");
+}());
+
+
 
 </script>
