@@ -37,6 +37,19 @@ if (isMobile()) {
 const canvas = document.getElementsByTagName('canvas')[0];
 resizeCanvas();
 
+window.addEventListener("resize", function(){
+    console.log("ReSIZE");
+
+    (function(canvas){
+
+        setTimeout(function(){
+            resizeCanvas();
+        }, 1000);
+
+
+    })(canvas)
+}, false);
+
 let config = {
     SIM_RESOLUTION: 128,
     DYE_RESOLUTION: 1024,
@@ -1162,6 +1175,13 @@ function resizeCanvas () {
         canvas.height = height;
         return true;
     }
+
+    if(canvas.width != window.innerWidth || canvas.width !== window.innerHeight){
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        return true;
+    }
+
     return false;
 }
 

@@ -28,6 +28,20 @@
                 ctx.putImageData(imageData, 0, 0);
             }
 
+            function goFullScreen() {
+                const elem = document.documentElement;
+                
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.mozRequestFullScreen) { // Firefox
+                    elem.mozRequestFullScreen();
+                } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { // IE/Edge
+                    elem.msRequestFullscreen();
+                }
+            }
+
             function resizeCanvas() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
@@ -106,6 +120,8 @@
     
                 e.stopImmediatePropagation();
                 e.preventDefault();
+
+                console.log(e.keyCode);
 
                 if(e.keyCode === 27){
                     console.log("Escape!");
